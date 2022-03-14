@@ -20,7 +20,7 @@ extern unsigned int SysTick;     //20ms tick
 
 //设置控制参数
 
-#define SETUP_ROW   8           //用户设置参数表StructSetup的参数数量
+#define SETUP_ROW   10           //用户设置参数表StructSetup的参数数量
 
 //参数表显示调整控制表结构定义
 struct SetupStruct{
