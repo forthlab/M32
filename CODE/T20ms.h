@@ -6,7 +6,7 @@
 **     Component : TimerInt
 **     Version   : Component 02.158, Driver 01.20, CPU db: 3.00.065
 **     Compiler  : CodeWarrior HCS08 C Compiler
-**     Date/Time : 2022/3/5, 15:46
+**     Date/Time : 2022/3/14, 17:01
 **     Abstract  :
 **         This component "TimerInt" implements a periodic interrupt.
 **         When the component and its events are enabled, the "OnInterrupt"

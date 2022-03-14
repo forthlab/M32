@@ -405,8 +405,11 @@ byte ReadSetupFromFlash( void )
     SetupVal[3] = 40;       //湿度
     SetupVal[4] = 80;
     SetupVal[5] = 0;        //国网模式
-    SetupVal[6] = 0;        //温度偏差
-    SetupVal[7] = 0;        //湿度偏差
+    SetupVal[6] = 0;        //温度0偏差
+    SetupVal[7] = 0;        //湿度0偏差
+    SetupVal[8] = 0;        //温度1偏差
+    SetupVal[9] = 0;        //湿度1偏差
+
 
     IFsh1_SetBlockFlash( (IFsh1_TAddress)(&SetupVal), (IFsh1_TAddress)(SetupOnFlash), sizeof(int) * SETUP_ROW );
     }
@@ -498,28 +501,11 @@ void ModifyParameterBySetup( void )
               WENDU1.ResetVal = WENDU2.ResetVal = low*10;
           }       
                   
-       
-          /*
-          WENDU1.SetVal = WENDU2.SetVal = SetupVal[1] *10;    //温度触发值,setupVal单位是度,WENDU.SetVal单位是0.1度          
-          
-          // 计算温度回差
-          c = abs(SetupVal[1]/8)*10;      
-          if( c < 50) c=50;
-          
-          // 计算温度恢复值
-          WENDU1.ResetVal = WENDU2.ResetVal = WENDU1.Mode ? (WENDU1.SetVal+c):(WENDU1.SetVal-c);     //温度控制释放值: 1:加热模式
-          */
-          
           //== C1: 湿度启动参数 
           SHIDU1.SetVal = SHIDU2.SetVal = ((Val_C1>Val_C2)?Val_C1:Val_C2) *10;       //湿度触发值(高值)
           SHIDU1.Mode   = SHIDU2.Mode   = 0;                //控制模式,1: 加热模式, 0: 散热模式(除湿)
           
           SHIDU1.ResetVal = SHIDU2.ResetVal =  ((Val_C1>Val_C2)?Val_C2:Val_C1) *10;   //温度恢复(3221)
-          /***计算湿度恢复值
-          c = abs(Val_C1 /8) *10; 
-          if( c < 50) c=50;           
-          SHIDU1.ResetVal = SHIDU2.ResetVal = SHIDU1.Mode ? (SHIDU1.SetVal+c):(SHIDU1.SetVal-c);     //温度控制释放值: 1:加热模式
-          */
           
 }
 
@@ -586,14 +572,14 @@ switch( MainStatus )
           if( (SysTick & 0x7F) == 0 )     
               //AM2320GetChannel(0, &WENDU1.Val + WenduGap, &SHIDU1.Val + ShiduGap);         //M3233,读取的温湿度+GAP
               AM2320GetChannel(0, &t, &h );         
-              WENDU1.Val  = t + WenduGap;           //M3233,读取的温湿度+GAP  ,GAP单位0.1度
-              SHIDU1.Val  = h + ShiduGap*10;        //湿度 ShiduGap 的单位是1%
+              WENDU1.Val  = t + WenduGap0;           //M3233,读取的温湿度+GAP  ,GAP单位0.1度
+              SHIDU1.Val  = h + ShiduGap0*10;        //湿度 ShiduGap 的单位是1%
           
           if( (SysTick & 0x7F) == 0x40 )  
               //AM2320GetChannel(1, &WENDU2.Val + WenduGap, &SHIDU2.Val + ShiduGap);
               AM2320GetChannel(1, &t, &h );         
-              WENDU2.Val  = t + WenduGap;           //M3233,读取的温湿度+GAP,GAP单位0.1度
-              SHIDU2.Val  = h + ShiduGap*10;
+              WENDU2.Val  = t + WenduGap1;           //M3233,读取的温湿度+GAP,GAP单位0.1度
+              SHIDU2.Val  = h + ShiduGap1*10;
         }   
 
 
@@ -618,8 +604,8 @@ switch( MainStatus )
             
               //c = AM2320GetChannel(0, &WENDU1.Val, &SHIDU1.Val);
               c = AM2320GetChannel(0, &t, &h );         
-              WENDU1.Val  = t + WenduGap;           //M3233,读取的温湿度+GAP  ,GAP单位0.1度
-              SHIDU1.Val  = h + ShiduGap*10;        //湿度 ShiduGap 的单位是1%
+              WENDU1.Val  = t + WenduGap0;           //M3233,读取的温湿度+GAP  ,GAP单位0.1度
+              SHIDU1.Val  = h + ShiduGap0*10;        //湿度 ShiduGap 的单位是1%
               
               //传感器故障
               if( c == 0 ){
@@ -636,8 +622,8 @@ switch( MainStatus )
            
               //c = AM2320GetChannel(1, &WENDU2.Val, &SHIDU2.Val);
               c = AM2320GetChannel(1, &t, &h );         
-              WENDU2.Val  = t + WenduGap;           //M3233,读取的温湿度+GAP,GAP单位0.1度
-              SHIDU2.Val  = h + ShiduGap*10;
+              WENDU2.Val  = t + WenduGap1;           //M3233,读取的温湿度+GAP,GAP单位0.1度
+              SHIDU2.Val  = h + ShiduGap1*10;
           
               //传感器故障
               if( c == 0 ){

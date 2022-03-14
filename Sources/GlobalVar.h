@@ -5,7 +5,7 @@
 
 #define  TPS   50    //50次/秒,20ms间隔  
 
-#define VERSION 0x3234   //软件版本,用16进制显示模式: 32- 34-    
+#define VERSION 0x325A   //软件版本,用16进制显示模式: 32- 34-    
 
 
  extern unsigned char ManualON;   //手动
@@ -46,9 +46,10 @@ extern int SetupOnFlash[ SETUP_ROW ] ;
 
 #define SetupVal_D1  SetupVal[5]    //V3232: 	SGCC 国网监控控制, 1:有效, 0: 无效
 
-#define WenduGap  SetupVal[6]       //V3233: 	SGCC 国网监控控制, 1:有效, 0: 无效
-#define ShiduGap  SetupVal[7]       //V3233: 	SGCC 国网监控控制, 1:有效, 0: 无效
-
+#define WenduGap0  SetupVal[6]       //V3235: 温度0校准，单位+-0.1°
+#define ShiduGap0  SetupVal[7]       //V3235: 湿度0校准，单位+-1%
+#define WenduGap1  SetupVal[8]       //V3235: 温度1校准
+#define ShiduGap1  SetupVal[9]       //V3235: 湿度1校准，单位+-1%
 
 //4路负载AD检测值   
 

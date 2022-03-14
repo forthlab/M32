@@ -6,7 +6,7 @@
 **     Component : WatchDog
 **     Version   : Component 02.126, Driver 01.17, CPU db: 3.00.065
 **     Compiler  : CodeWarrior HCS08 C Compiler
-**     Date/Time : 2022/3/5, 15:46
+**     Date/Time : 2022/3/14, 17:01
 **     Abstract  :
 **         This device "WatchDog" implements a watchdog.
 **         When enabled, the watchdog timer counts until it reaches
