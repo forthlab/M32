@@ -1,0 +1,52 @@
+2022-3-1	0000:
+	增加E1E2: 温度湿度校准,单位0,1度
+
+2022-3-5	0001
+	(1) zjm说校准无效,发现确实不对,修改
+	ZJM_M32_main.c / my_main() /
+	//每2秒读取传感器数据      
+       if( SysTick > ( TPS *2) ){
+      
+          if( (SysTick & 0x7F) == 0 )     
+              //AM2320GetChannel(0, &WENDU1.Val + WenduGap, &SHIDU1.Val + ShiduGap);         //M3233,读取的温湿度+GAP
+              AM2320GetChannel(0, &t, &h );         
+              WENDU1.Val  = t + WenduGap;           //M3233,读取的温湿度+GAP
+              SHIDU1.Val  = h + ShiduGap;
+          
+          if( (SysTick & 0x7F) == 0x40 )  
+              //AM2320GetChannel(1, &WENDU2.Val + WenduGap, &SHIDU2.Val + ShiduGap);
+              AM2320GetChannel(1, &t, &h );         
+              WENDU2.Val  = t + WenduGap;           //M3233,读取的温湿度+GAP
+              SHIDU2.Val  = h + ShiduGap;
+        }   
+
+
+	(2) 负号不对,修改TM1629c.c:
+	// 数码管字段，对应
+	// 0,1,2,3,4,5,6,7,8,9,   abcdef  暗 -     
+	// 暗: 0 
+	// -: 0x40
+	//const unsigned char Bar[]= { 0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f, 0, 0x40};
+  	const unsigned char Bar[]= { 0xfc, 0x60, 0xda, 0xf2, 0x66, 0xb6, 0xbe, 0xe0, 0xfe, 0xf6,
+	    0xee, 0x3e, 0x9c, 0x7a, 0x9e, 0x8e, 0, 0x02 };//3233,负号不是40,是02
+
+	余留问题:
+	E1,E2的范围是+-30.0,单位是0.1,如何显示的?
+
+2022-3-5	0002
+	E1的范围改为+-99, 温度单位0.1度
+	E2的范围改为+-90, 湿度单位1%
+
+2022-3-5	0004
+	负号和不显示代码搞错了,修改
+
+2022-3-6  32-A4
+	小张说:功能正常,就是修改配置,退出时,数码管显示不正常,上面的数码管显示9.9
+	猜测: 1. 设置结束后,进入重启状态(START),显示版本号和温度控制值;待tick>5秒后,进入正常工作;
+		但因此时tick>>5秒,因此一闪而过;
+	      2. 这个是测试版本,版本号0x0004,是否显示异常?改为0x33A4 
+
+
+2022-3-10 32-34
+	前面设置参数后，直接进入contral界面，不进start，数码管显示99.9的故障消失
+	定稿
